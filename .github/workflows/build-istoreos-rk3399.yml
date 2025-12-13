@@ -11,17 +11,11 @@ on:
       board:
         description: "Select device board"
         required: false
-        default: "fmx1-pro"
+        default: "fine3399"
         type: choice
         options:
-          - am40
-          - dg3399
-          - dlfr100
-          - fmx1-pro
           - fnet3399
-          - tpm-312
-          - tvi3315a
-          - xiaobao-nas
+          - fine3399
 
 env:
   REPO_URL: https://github.com/istoreos/istoreos
@@ -45,7 +39,7 @@ jobs:
           # - istoreos-22.03
           - istoreos-24.10
         ARCHITECTURE:
-          - aarch64_cortex-a53
+          - rk3399
         os:
           - ubuntu-22.04
 
@@ -202,8 +196,6 @@ jobs:
           - 🌳 分支: ${{ matrix.REPO_BRANCH }}  
           - ⏱️ 编译时间: ${{ env.BUILD_DATE }}
           - 👤 用户名: root
-          - 🔒 密码: password
-          - 📒 说明: 默认网口为LAN，旁路由模式，需要接入主路由器后进后台查找对应IP地址再访问。
           ### iStoreOS Image Verification  
           - sha256sum   
         draft: false  
