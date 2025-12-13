@@ -30,7 +30,7 @@ cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/02_network target/linux/rockc
 
 cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/813-ethernet-stmmac-Add-property-to-disable-VLAN-hw-filter.patch target/linux/rockchip/patches-6.6/813-ethernet-stmmac-Add-property-to-disable-VLAN-hw-filter.patch
 
-cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/rk3588-lubancat-5.dts target/linux/rockchip/dts/rk3399/rk3588-lubancat-5.dts
+cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/rk3588-lubancat-5.dts target/linux/rockchip/dts/rk3588/rk3588-lubancat-5.dts
 
 mkdir -p target/linux/rockchip/armv8/base-files/etc/hotplug.d/net/
 cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/90-rps target/linux/rockchip/armv8/base-files/etc/hotplug.d/net/90-rps
