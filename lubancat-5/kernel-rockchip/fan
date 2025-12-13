@@ -1,0 +1,35 @@
+#!/bin/sh /etc/rc.common
+# PWM初始化脚本
+
+START=99
+
+boot() {
+    sleep 2
+    
+    echo "Initializing PWM..."
+    
+    if [ ! -d /sys/class/pwm/pwmchip0 ]; then
+        echo "PWM device not found"
+        return 1
+    fi
+    
+    if [ ! -d /sys/class/pwm/pwmchip0/pwm0 ]; then
+        echo 0 > /sys/class/pwm/pwmchip0/export 2>/dev/null
+        if [ $? -ne 0 ]; then
+            echo "Failed to export PWM channel 0"
+            return 1
+        fi
+        sleep 0.5
+    fi
+    
+    echo 50000 > /sys/class/pwm/pwmchip0/pwm0/period 2>/dev/null && \
+    echo 49800 > /sys/class/pwm/pwmchip0/pwm0/duty_cycle 2>/dev/null && \
+    echo 1 > /sys/class/pwm/pwmchip0/pwm0/enable 2>/dev/null
+    
+    if [ $? -eq 0 ]; then
+        echo "PWM initialized successfully"
+        echo "Period: 50000, Duty: 49800"
+    else
+        echo "Failed to configure PWM parameters"
+    fi
+}
