@@ -6,7 +6,6 @@ src-git telephony https://github.com/openwrt/telephony.git;openwrt-24.10
 src-git store https://github.com/linkease/istore.git;main
 # argon, etc.
 src-git third https://github.com/jjm2473/openwrt-third.git;main
-src-include defaults feeds.conf.default
 src-git h69k_oled https://github.com/jjm2473/luci-app-oled.git;master
 src-git lcdsimple https://github.com/jjm2473/lcdsimple.git;main
 src-git third_party https://github.com/linkease/istore-packages.git;main
