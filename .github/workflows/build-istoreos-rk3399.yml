@@ -1,4 +1,4 @@
-name: Build iStore OS
+name: Build iStore OS 3399
 
 on:
   repository_dispatch:
