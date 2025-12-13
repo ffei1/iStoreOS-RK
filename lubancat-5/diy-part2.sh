@@ -35,4 +35,4 @@ cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/rk3588-lubancat-5.dts target/
 mkdir -p target/linux/rockchip/armv8/base-files/etc/hotplug.d/net/
 cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/90-rps target/linux/rockchip/armv8/base-files/etc/hotplug.d/net/90-rps
 
-
+cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/fan target/linux/rockchip/armv8/base-files/etc/init.d/fan
