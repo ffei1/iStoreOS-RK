@@ -418,8 +418,8 @@ board_set_iface_smp_affinity() {
 		set_iface_cpumask 20 "eth1"
 		;;
 	rumu3f,fine-3399)
-		set_iface_cpumask 4 "eth0" "" 30
-		set_iface_cpumask 8 "eth1" "xhci-hcd:usb[0-9]+" 30
+		set_iface_cpumask 2 "eth0" "" 0c
+		set_iface_cpumask 10 "eth1" "xhci-hcd:usb[0-9]+" 20
 		ethtool -K eth1 rx off tx off tso off gso off sg off
 		;;
 	embedfire,lubancat-5)
