@@ -27,8 +27,6 @@ cp -f $GITHUB_WORKSPACE/lubancat-5/uboot-rockchip/rk3588-lubancat-5-u-boot.dtsi 
 # 复制patch到对应的目录
 cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/init.sh target/linux/rockchip/armv8/base-files/lib/board/init.sh
 
-cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/Makefile target/linux/rockchip/image/Makefile
-
 cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/02_network target/linux/rockchip/armv8/base-files/etc/board.d/02_network
 
 cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/813-ethernet-stmmac-Add-property-to-disable-VLAN-hw-filter.patch target/linux/rockchip/patches-6.6/813-ethernet-stmmac-Add-property-to-disable-VLAN-hw-filter.patch
