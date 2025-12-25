@@ -12,6 +12,9 @@
 # linux/rockchip/image/legacy.mk添加设备型号
 echo -e '\ndefine Device/embedfire_lubancat-5\n$(call Device/Legacy/rk3588,$(1))\n  DEVICE_VENDOR := Embedfire\n  DEVICE_MODEL := LubanCat 5\n  UBOOT_DEVICE_NAME := lubancat-5-rk3588\n  DEVICE_PACKAGES += kmod-ata-ahci-dwc kmod-nvme\nendef\nTARGET_DEVICES += embedfire_lubancat-5' >> target/linux/rockchip/image/legacy.mk
 
+#修改target/linux/rockchip/image/Makefile打包方式
+sed -i 's/dd if="\$(STAGING_DIR_IMAGE)"\/\$(UBOOT_DEVICE_NAME)-u-boot-rockchip\.bin of="\$\@" seek=64 conv=notrunc/dd if="$(STAGING_DIR_IMAGE)"\/$(UBOOT_DEVICE_NAME)-idbloader.img of="$@" seek=64 conv=notrunc\n    dd if="$(STAGING_DIR_IMAGE)"\/$(UBOOT_DEVICE_NAME)-u-boot.itb of="$@" seek=16384 conv=notrunc/' target/linux/rockchip/image/Makefile
+
 # 复制修改好的uboot/Makefile到对应目录
 cp -f $GITHUB_WORKSPACE/lubancat-5/uboot-rockchip/lubancat-5-rk3588_defconfig package/boot/uboot-rockchip/src/configs/lubancat-5-rk3588_defconfig
 
