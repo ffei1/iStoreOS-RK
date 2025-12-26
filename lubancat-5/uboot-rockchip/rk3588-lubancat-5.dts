@@ -795,7 +795,7 @@
 };
 
 &u2phy0_otg {
-	rockchip,typec-vbus-det;
+	phy-supply = <&vcc5v0_typec>;
 	status = "okay";
 };
 
