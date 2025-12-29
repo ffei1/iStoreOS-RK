@@ -153,6 +153,8 @@ jobs:
           cp -f bin/targets/*/*/*.img.gz output/
         fi
 
+        cp -f config.buildinfo feeds.buildinfo version.buildinfo sha256sums output/ 2>/dev/null || true
+        
         rm -rf $(ls . | grep -v "^output$" | xargs) 2>/dev/null
 
         echo "📁 output/ 目录内容:"
@@ -164,8 +166,8 @@ jobs:
         fi
 
         # Generate sha256sum file
-        cd output/
-        for file in *; do [[ ! -d "${file}" ]] && sha256sum "${file}" >"${file}.sha"; done
+        # cd output/
+        # for file in *; do [[ ! -d "${file}" ]] && sha256sum "${file}" >"${file}.sha"; done
 
         # Set output information
         df -hT ${PWD}
@@ -173,7 +175,7 @@ jobs:
 
     - name: 设置 Release Tag or date
       run: |
-        RELEASE_TAG="iStoreOS-24.10-RK3399-$(date +%Y.%m)"
+        RELEASE_TAG="iStoreOS-24.10-RK3588-$(date +%Y.%m)"
         echo "RELEASE_TAG=${RELEASE_TAG}" >> $GITHUB_ENV
         BUILD_DATE="$(date +%Y.%m.%d)"
         echo "BUILD_DATE=${BUILD_DATE}" >> $GITHUB_ENV
@@ -190,7 +192,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         body: |  
           ### iStoreOS Image Information  
-          - 💻 CPU: rk3399    
+          - 💻 CPU: rk3588    
           - 📂 源码: ${{ env.REPO_URL }}
           - 🌳 分支: ${{ matrix.REPO_BRANCH }}  
           - ⏱️ 编译时间: ${{ env.BUILD_DATE }}
