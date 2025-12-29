@@ -20,7 +20,7 @@ on:
 env:
   REPO_URL: https://github.com/istoreos/istoreos
   # REPO_BRANCH: main
-  FEEDS_CONF: feeds.conf.default
+  FEEDS_CONF: feeds.conf
   CONFIG_FILE: ${{ inputs.board }}/.config
   DIY_P1_SH: ${{ inputs.board }}/diy-part1.sh
   DIY_P2_SH: ${{ inputs.board }}/diy-part2.sh
