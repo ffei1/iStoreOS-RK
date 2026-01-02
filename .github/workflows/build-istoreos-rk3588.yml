@@ -153,7 +153,8 @@ jobs:
           cp -f bin/targets/*/*/*.img.gz output/
         fi
 
-        cp -f config.buildinfo feeds.buildinfo version.buildinfo sha256sums output/ 2>/dev/null || true
+        cp -f bin/targets/*/*/*/*.buildinfo output/ 2>/dev/null || true
+        cp -f bin/targets/*/*/*/*sha256sums output/ 2>/dev/null || true
         
         rm -rf $(ls . | grep -v "^output$" | xargs) 2>/dev/null
 
