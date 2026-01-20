@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# 添加cron任务到root用户的crontab
+echo "*/2 * * * * /usr/sbin/dhcp-watchdog >/dev/null 2>&1" >> /etc/crontabs/root
+
+chmod +x /usr/sbin/dhcp-watchdog
+
+# 启用并重启cron服务
+/etc/init.d/cron enable
+/etc/init.d/cron restart
+
+exit 0

@@ -1,0 +1,118 @@
+#!/bin/sh
+# DHCP Watchdog - Home Network Final Version
+# - no DHCP traffic check
+# - no lease timestamp check
+# - no fd / memory heuristics
+# - zombie(D/Z) needs confirmation
+#
+
+LOG="/tmp/dhcp-watchdog.log"
+LEASE="/tmp/dhcp.leases"
+STATE_FILE="/tmp/dnsmasq.state"
+COOLDOWN_FILE="/tmp/dhcp-watchdog.cooldown"
+ETH_STATE_FILE="/tmp/eth0.state"
+NOW="$(date '+%Y-%m-%d %H:%M:%S')"
+
+log() {
+    # 超过 256KB 自动清空
+    if [ -f "$LOG" ] && [ "$(wc -c < "$LOG" 2>/dev/null || echo 0)" -gt 262144 ]; then
+        : > "$LOG"
+    fi
+    echo "[$NOW] $1" >> "$LOG"
+}
+
+# 冷却期检查（防止频繁重启）
+if [ -f "$COOLDOWN_FILE" ]; then
+    last_restart=$(cat "$COOLDOWN_FILE" 2>/dev/null)
+    now=$(date +%s)
+    if [ -n "$last_restart" ] && [ $((now - last_restart)) -lt 180 ]; then  # 3分钟冷却
+        exit 0
+    fi
+fi
+
+### dnsmasq 进程必须存在
+PID="$(pidof dnsmasq 2>/dev/null | awk '{print $NF}')"
+if [ -z "$PID" ]; then
+    log "dnsmasq not running, restarting"
+    date +%s > "$COOLDOWN_FILE"
+    /etc/init.d/dnsmasq restart
+    rm -f "$STATE_FILE"
+    exit 0
+fi
+
+# 验证进程确实存在（防竞争条件）
+if ! kill -0 "$PID" 2>/dev/null || [ ! -d "/proc/$PID" ]; then
+    # 进程可能刚刚结束，下次检查会处理
+    exit 0
+fi
+
+### 检查 dnsmasq 进程状态（三态模型）
+# R/S = 正常
+# D/Z = 可疑 → 需要连续确认
+STATE="$(awk '{print $3}' /proc/$PID/stat 2>/dev/null || echo "R")"
+
+if [ "$STATE" = "D" ] || [ "$STATE" = "Z" ]; then
+    # 状态文件过期清理（30分钟）
+    if [ -f "$STATE_FILE" ]; then
+        if [ "$(date -r "$STATE_FILE" +%s 2>/dev/null || echo 0)" -lt $(( $(date +%s) - 1800 )) ]; then
+            rm -f "$STATE_FILE"
+        fi
+    fi
+    
+    LAST_STATE="$(cat "$STATE_FILE" 2>/dev/null)"
+    
+    if [ "$LAST_STATE" = "$STATE" ]; then
+        log "dnsmasq stuck in state $STATE, restarting"
+        date +%s > "$COOLDOWN_FILE"
+        /etc/init.d/dnsmasq restart
+        rm -f "$STATE_FILE"
+        exit 0
+    else
+        echo "$STATE" > "$STATE_FILE"
+        log "dnsmasq entered state $STATE, waiting for confirmation"
+        exit 0
+    fi
+else
+    # 状态恢复正常，清理记录
+    rm -f "$STATE_FILE"
+fi
+
+### br-lan 必须是 UP（DHCP 前提）
+if ! ip link show br-lan 2>/dev/null | grep -q "UP"; then
+    log "br-lan down, restarting network"
+    date +%s > "$COOLDOWN_FILE"
+    /etc/init.d/network restart
+    rm -f "$STATE_FILE"
+    exit 0
+fi
+
+### eth0是lan口 必须是 UP
+if ! ip link show eth0 2>/dev/null | grep -q "UP"; then
+    LAST="$(cat "$ETH_STATE_FILE" 2>/dev/null)"
+    if [ "$LAST" = "down" ]; then
+        log "eth0 down confirmed, reboot"
+        date +%s > "$COOLDOWN_FILE"
+        reboot
+        exit 0
+    else
+        echo down > "$ETH_STATE_FILE"
+        log "eth0 down detected, waiting for confirmation"
+        exit 0
+    fi
+else
+    rm -f "$ETH_STATE_FILE"
+fi
+
+### dhcp.leases 只检查"是否损坏"，不检查是否更新
+if [ ! -f "$LEASE" ] || ! head -n 1 "$LEASE" >/dev/null 2>&1; then
+    log "dhcp.leases missing or unreadable, restarting dnsmasq"
+    date +%s > "$COOLDOWN_FILE"
+    rm -f "$LEASE"
+    /etc/init.d/dnsmasq restart
+    rm -f "$STATE_FILE"
+    exit 0
+fi
+
+### 一切正常
+#log "All checks passed, dnsmasq PID: $PID, state: $STATE"
+exit 0
