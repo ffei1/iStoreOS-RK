@@ -50,6 +50,7 @@ chmod 755 target/linux/rockchip/armv8/base-files/etc/init.d/pwmfan
 mkdir -p target/linux/rockchip/armv8/base-files/usr/sbin
 cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/dhcp-watchdog target/linux/rockchip/armv8/base-files/usr/sbin/dhcp-watchdog
 cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/02-setup-cron target/linux/rockchip/armv8/base-files/etc/uci-defaults/02-setup-cron
+chmod 755 target/linux/rockchip/armv8/base-files/usr/sbin/dhcp-watchdog
 chmod 755 target/linux/rockchip/armv8/base-files/etc/uci-defaults/02-setup-cron
 #cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/init.sh target/linux/rockchip/armv8/base-files/lib/board/init.sh
 #cp -f $GITHUB_WORKSPACE/lubancat-5/kernel-rockchip/02_network target/linux/rockchip/armv8/base-files/etc/board.d/02_network
